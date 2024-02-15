@@ -3,3 +3,4 @@
 dataset/*
 !dataset/*.py
 weights/*.pt
+lightning_logs/*

@@ -1,5 +1,4 @@
 import pytorch_lightning as pl
-import torchvision.transforms as T
 from torch.utils.data import DataLoader
 from dataset.dataset import get_lfw_people
 
@@ -28,6 +27,8 @@ class FRDataModule(pl.LightningDataModule):
 # Below is an example of how to use the data module
 
 if __name__ == '__main__':
+    
+    import torchvision.transforms as T
     
     data = get_lfw_people(train_ratio=0.8, 
                           transform=T.Compose([

@@ -1,22 +1,32 @@
-import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-from data_module import FRDataModule
-from torchvision import transforms as T
-from dataset.dataset import get_lfw_people
-from models.model import get_backbone, FaceRecognitionModule
-from configs.base import config
+from pytorch_lightning import Trainer
+from pytorch_lightning.loggers import TensorBoardLogger
+from argparse import ArgumentParser
 
+from dataset.dataset import get_lfw_people
+from dataset.data_module import FRDataModule
+from models.model import get_backbone, FaceRecognitionModule
+
+def get_config():
+    parser = ArgumentParser()
+    parser.add_argument('--config', type=str, help='path to config file')
+    args = parser.parse_args()
+    config_path = args.config
+    config_name = 'configs.' + config_path.split('/')[-1].split('.')[0]
+    
+    try:
+        config_module = __import__(config_name, fromlist=['config'])
+        return config_module.config
+    except:
+        raise ValueError(f'Config file {config_name} not found')    
+        
 def get_data_module(config) -> FRDataModule:
     
-    transform = T.Compose([
-                            T.Resize(config.input_size), 
-                            T.ToTensor()
-                        ])
-    
-    data = get_lfw_people(config.train_ratio, transform)
+    data = get_lfw_people(config)
 
-    lfw_data_module = FRDataModule(data, 
+    lfw_data_module = FRDataModule(
+        data, 
         config.batch_size, 
         config.num_workers) 
     
@@ -40,9 +50,12 @@ def summary_model(model):
     print(summary(model))
 
 def main():
+    
+    config = get_config()
     data_module = get_data_module(config)
     model = get_model(config)
-    trainer = pl.Trainer(max_epochs=config.max_epochs)
+    logger = TensorBoardLogger(save_dir='lightning_logs', name=config.exp_name)
+    trainer = Trainer(max_epochs=config.max_epochs, logger=logger)
     trainer.fit(model, data_module.train_dataloader(), data_module.val_dataloader())
 
 if __name__ == '__main__':

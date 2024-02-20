@@ -1,10 +1,11 @@
 from easydict import EasyDict as edict
 config = edict()
+config.exp_name='Untitled-Experiment'
 
 # Data
-config.train_ratio=0.8
-config.input_size=112
-config.num_classes=5749
+config.train_val_ratio=0.5
+config.input_size=112 
+config.num_classes=5749 # lfw
 
 # Model
 config.model_name='mbf_large'
@@ -16,4 +17,4 @@ config.pretrain=True
 config.batch_size=128
 config.num_workers=16
 config.lr=1e-3
-config.max_epochs=100
+config.max_epochs=50

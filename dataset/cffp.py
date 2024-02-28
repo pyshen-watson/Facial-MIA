@@ -35,6 +35,7 @@ class CFFP_DataModule(pl.LightningDataModule):
             self.cfg.batch_size,
             shuffle=False,
             num_workers=self.cfg.num_workers,
+            drop_last=True,
         )
 
     def test_dataloader(self):

@@ -1,8 +1,9 @@
 *.pyc
-
+.backup/*
+.cache/*
 dataset/*
 !dataset/*.py
+
 weights/*
 lightning_logs/*
 output/*
-.cache/*

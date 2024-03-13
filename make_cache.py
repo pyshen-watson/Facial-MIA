@@ -12,8 +12,8 @@ from dataset import get_raw_dataset
 
 def get_args():
     parser = ArgumentParser()
-    parser.add_argument('--config', '-c', default='base',
-                        type=str, help='[base/lfw/ms1mv3]')
+    parser.add_argument('--config', '-c', default='default',
+                        type=str, help='[base/lfw/celeba]')
     args = parser.parse_args()
     return args
 

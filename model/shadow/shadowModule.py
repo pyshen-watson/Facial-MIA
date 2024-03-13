@@ -2,26 +2,25 @@ import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 
-from typing import Callable
 from pathlib import Path
 from dataclasses import asdict
 
 from .reconstructor import ReconstructModel
 from .losses import DSSIMLoss, IDLoss
+from ..common import draw_rows
 from configs import Config
 
 
 
 class ShadowModule(pl.LightningModule):
 
-    def __init__(self, cfg: Config, backbone:nn.Module, callback: Callable):
+    def __init__(self, cfg: Config, backbone:nn.Module):
 
         super().__init__()
         self.save_hyperparameters(asdict(cfg))
 
         self.cfg = cfg
         self.backbone = backbone
-        self.callback = callback
         self.shadow = ReconstructModel(cfg.output_size)
 
         # Freeze the backbone
@@ -99,13 +98,14 @@ class ShadowModule(pl.LightningModule):
             img_ori = batch[0]
             img_rec = outputs['img_rec']
             save_path = save_dir / f"{self.current_epoch}.png"
-            self.callback(img_ori, img_rec, n_pair=20, save_path=str(save_path))
+            draw_rows([img_ori, img_rec], ["img_ori", "img_rec"], n_pair=20, save_path=str(save_path))
         
     def on_predict_batch_end(self, outputs, batch, batch_idx):
+
         save_dir = Path(f"output/{self.cfg.exp_name}/pred")
         save_dir.mkdir(parents=True, exist_ok=True)
         
         img_ori = batch[0]
         img_rec = outputs
         save_path = save_dir / f"{batch_idx}.png"
-        self.callback(img_ori, img_rec, n_pair=20, save_path=str(save_path))
+        draw_rows([img_ori, img_rec], ["img_ori", "img_rec"], n_pair=20, save_path=str(save_path))

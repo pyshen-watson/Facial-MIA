@@ -1,23 +1,45 @@
-from torch.utils.data import  Dataset
+from typing import List
+import pytorch_lightning as pl
+from torch.utils.data import DataLoader, random_split
+    
+from face_data import FaceDataset, get_dataset
 from configs.config import Config
-from .cffp import CFFP_DataModule
-from .common import *
 
 
-def get_raw_dataset(cfg: Config) -> Dataset:
-
-    if cfg.shadow_dataset == 'lfw':
-        from .lfw_raw import LFWRawDataset
-        return LFWRawDataset(cfg.input_size)
+def get_dataModule(cfg: Config):
     
-    elif cfg.shadow_dataset == 'ms1mv3':
-        pass
-
-    else:
-        raise ValueError(f'Dataset {cfg.shadow_dataset} not found')
-
-def get_dataModule(cfg: Config) -> CFFP_DataModule:
+    dataset = get_dataset(cfg.shadow_dataset, cfg.input_size)
+    split_ratio = cfg.split_ratio
     
-    if cfg.shadow_dataset not in ['lfw', 'ms1mv3']:
-        raise ValueError(f'Dataset {cfg.shadow_dataset} not found')
-    return CFFP_DataModule(cfg)
+    return FaceDataModule(dataset, split_ratio)
+
+class FaceDataModule(pl.LightningDataModule):
+
+    def __init__(self, dataset: FaceDataset, split_ratio: List[float]):
+        super(FaceDataModule, self).__init__()
+        self.train_set, self.val_set, self.test_set = random_split(dataset, split_ratio)
+
+    def train_dataloader(self):
+        return DataLoader(
+            self.train_set,
+            self.cfg.batch_size,
+            shuffle=True,
+            num_workers=self.cfg.num_workers,
+        )
+
+    def val_dataloader(self):
+        return DataLoader(
+            self.val_set,
+            self.cfg.batch_size,
+            shuffle=False,
+            num_workers=self.cfg.num_workers,
+            drop_last=True,
+        )
+
+    def test_dataloader(self):
+        return DataLoader(
+            self.test_set,
+            self.cfg.batch_size,
+            shuffle=False,
+            num_workers=self.cfg.num_workers,
+        )

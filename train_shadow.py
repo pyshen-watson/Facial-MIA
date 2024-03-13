@@ -2,7 +2,7 @@ import pytorch_lightning as pl
 from argparse import ArgumentParser
 
 from configs import get_config
-from dataset import get_dataModule, draw_rows
+from dataset import get_dataModule
 from model import get_backbone, get_shadow
 
 
@@ -26,7 +26,7 @@ def main():
     test_loader  = datamodule.test_dataloader()
 
     backbone = get_backbone(config)
-    shadow = get_shadow(config, backbone, callback=draw_rows)
+    shadow = get_shadow(config, backbone)
 
     ############################ Train and Test ############################
 

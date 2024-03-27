@@ -20,7 +20,7 @@ class Config:
     shadow_ckpt_path: str = ""
     
     # Training
-    batch_size: int = 80
+    batch_size: int = 64
     num_workers: int = 16
     lr: float = 1e-3
     max_epochs: int = 250

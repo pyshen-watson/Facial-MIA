@@ -7,6 +7,7 @@ Original author: H. O. Shahreza, V. K. Hahn and S. Marcel
 
 import torch.nn as nn
 
+
 class ReconstructBlock(nn.Module):
     
     def __init__(self, in_c, out_c, ksize, stride, padding):
@@ -35,12 +36,12 @@ class ReconstructBlock(nn.Module):
         xs = self.skip(xd)
         return xd + xs
     
-class ReconstructModel(nn.Module):
-    
-    def __init__(self, feat_len):
-        super(ReconstructModel, self).__init__()
+class IdiapModel(nn.Module):
+
+    def __init__(self, input_len: int):
         
-        self.decode1 = ReconstructBlock(feat_len, 512, 4, 1, 0)
+        super(IdiapModel, self).__init__()
+        self.decode1 = ReconstructBlock(input_len, 512, 4, 1, 0)
         self.decode2 = ReconstructBlock(512, 256, 4, 2, 1)
         self.decode3 = ReconstructBlock(256, 128, 4, 2, 1)
         self.decode4 = ReconstructBlock(128, 64, 4, 2, 2)

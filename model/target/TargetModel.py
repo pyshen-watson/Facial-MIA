@@ -6,11 +6,13 @@ from dataclasses import dataclass, field
 
 from .mbf_v1 import get_mbf_large as mbf_large_v1
 from .mbf_v2 import get_dpmbf_large as mbf_large_v2
+from .mbf_v3 import get_noisy_mbf_large as mbf_large_v3
 
 
 class TargetType(Enum):
     MBF_LARGE_V1 = "mbf_large_v1"
     MBF_LARGE_V2 = "mbf_large_v2"
+    MBF_LARGE_V3 = "mbf_large_v3"
 
     @staticmethod
     def keys():
@@ -35,6 +37,9 @@ class TargetModel(nn.Module):
 
         elif self.model_type == TargetType.MBF_LARGE_V2:
             self.backbone = mbf_large_v2(self.fp16, self.num_features)
+
+        elif self.model_type == TargetType.MBF_LARGE_V3:
+            self.backbone = mbf_large_v3(self.fp16, self.num_features)
 
         else:
             raise ValueError(

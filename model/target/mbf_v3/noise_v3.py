@@ -1,15 +1,13 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class NoisyActivation(nn.Module):
     def __init__(self, input_shape=112, budget_mean=2, sensitivity=None, require_grad=True):
         super(NoisyActivation, self).__init__()
         self.h, self.w = input_shape, input_shape
-        if sensitivity is None:
-            sensitivity = torch.ones([189, self.h, self.w]).cuda()
-            # sensitivity = torch.ones([189, self.h, self.w]).to('cpu')
-        self.sensitivity = sensitivity.reshape(189 * self.h * self.w)
+        # if sensitivity is None:
+        #     sensitivity = torch.ones([189, self.h, self.w])
+        # self.sensitivity = sensitivity.reshape(189 * self.h * self.w)
         self.given_locs = torch.zeros((189, self.h, self.w))
         size = self.given_locs.shape
         self.budget = budget_mean * 189 * self.h * self.w
@@ -21,12 +19,11 @@ class NoisyActivation(nn.Module):
 
     def scales(self):
         softmax = nn.Softmax(dim=0)
-        return (self.sensitivity / (softmax(self.rhos.reshape(189 * self.h * self.w))
-                * self.budget)).reshape(189, self.h, self.w)
+        result = 1 / softmax(self.rhos.reshape(189 * self.h * self.w)) * self.budget
+        return result.reshape(189, self.h, self.w)
 
     def sample_noise(self):
-        epsilon = self.laplace.sample(self.rhos.shape).cuda()
-        # epsilon = self.laplace.sample(self.rhos.shape).to('cpu')
+        epsilon = self.laplace.sample(self.rhos.shape).to(self.locs.device)
         return self.locs + self.scales() * epsilon
 
     def forward(self, input):

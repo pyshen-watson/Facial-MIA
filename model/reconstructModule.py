@@ -2,7 +2,6 @@ import cv2
 import torch
 import numpy as np
 import pytorch_lightning as pl
-import matplotlib.pyplot as plt
 
 
 from pathlib import Path
@@ -23,6 +22,7 @@ class ReconstructModule(pl.LightningModule):
     
     def setup(self, stage):
         self.exp_name = f"output/{datetime.now():%Y%m%d%H%M%S}"
+        self.cfg_name = f"{self.target.model_type.value}+{self.shadow.model_type.value}"
         self.gpu_id = self.trainer.local_rank
         self.out_ori = []
         self.out_rec = []
@@ -57,7 +57,7 @@ class ReconstructModule(pl.LightningModule):
         return self.calc_loss(batch[0], 'test')
 
     def on_save_checkpoint(self, checkpoint):
-        torch.save(self.shadow.backbone.state_dict(), f"{self.target.model_type.value}+{self.shadow.model_type.value}.pt")  
+        torch.save(self.shadow.backbone.state_dict(), f"{self.cfg_name}.pt")  
     
     def visualize_batch(self, img_ori, img_rec, save_path, max_size=16):
         
@@ -81,7 +81,7 @@ class ReconstructModule(pl.LightningModule):
             row2 = np.concatenate(img_rec[start:end], axis=1)
             row = np.concatenate([row1, row2], axis=0)
             rows.append(row)
-            rows.append(np.zeros((15, row.shape[1], 3), dtype=np.uint8)) # the gap
+            rows.append(np.zeros((10, row.shape[1], 3), dtype=np.uint8)) # the gap
 
         img = np.concatenate(rows, axis=0)
         cv2.imwrite(str(save_path / f"cuda{self.gpu_id}.jpg"), img)
@@ -93,7 +93,7 @@ class ReconstructModule(pl.LightningModule):
         
     def on_validation_epoch_end(self):
         
-        save_path = Path(f"{self.exp_name}(val)") / f"{self.current_epoch}"
+        save_path = Path(f"{self.exp_name}(train)") / f"{self.current_epoch}"
         save_path.mkdir(parents=True, exist_ok=True)
         
         self.visualize_batch(

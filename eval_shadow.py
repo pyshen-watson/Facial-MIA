@@ -8,10 +8,10 @@ from dataset import FaceDataModule
 pl.seed_everything(42, workers=True)
 
 target = TargetModel(model_type=TargetType.MBF_LARGE_V1).load('weights/backbone/mbf_large_v1.pt').freeze().eval()
-shadow = ShadowModel(model_type=ShadowType.IDIAP).load("weights/shadow/mbf_large_v1+idiap.pt").set_target(target)
+shadow = ShadowModel(model_type=ShadowType.IDIAP).load("weights/shadow/mbf_large_v1+idiap(celeba).pt").set_target(target)
 model = ReconstructModule(target, shadow)
 
-dataset = HDF5Dataset(HDF5DatasetType.CELEBA)
+dataset = HDF5Dataset(HDF5DatasetType.LFW)
 dataModule = FaceDataModule(dataset, batch_size=160)
 test_loader = dataModule.test_dataloader()
 

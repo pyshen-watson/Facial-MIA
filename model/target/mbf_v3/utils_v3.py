@@ -76,6 +76,7 @@ def _harmonics(N: int) -> Tensor:
 
     return torch.cos(spatial @ spectral)
 
+
 def block_dct(blocks: Tensor) -> Tensor:
     N = blocks.shape[3]
 
@@ -87,9 +88,9 @@ def block_dct(blocks: Tensor) -> Tensor:
     return coeff
 
 
-def images_to_batch(x):
+def discrete_cosine_transform(x):
     x = (x + 1) / 2 * 255
-    x = F.interpolate(x, scale_factor=8, mode='bilinear', align_corners=True)
+    x = F.interpolate(x, scale_factor=8, mode="bilinear", align_corners=True)
     if x.shape[1] != 3:
         print("Wrong input, Channel should equals to 3")
         return
@@ -98,8 +99,7 @@ def images_to_batch(x):
     bs, ch, h, w = x.shape
     block_num = h // 8
     x = x.view(bs * ch, 1, h, w)
-    x = F.unfold(x, kernel_size=(8, 8), dilation=1, padding=0,
-                 stride=(8, 8))
+    x = F.unfold(x, kernel_size=(8, 8), dilation=1, padding=0, stride=(8, 8))
     x = x.transpose(1, 2)
     x = x.view(bs, ch, -1, 8, 8)
     dct_block = block_dct(x)

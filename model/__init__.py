@@ -1,3 +1,3 @@
 from .target import TargetModel, TargetType
-from .shadow import ShadowModel, ShadowType
-from .reconstructModule import ReconstructModule
+from .attack import AttackModel, AttackType
+from .MIA import ModelInversionAttackModule

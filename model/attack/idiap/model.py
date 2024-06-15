@@ -53,6 +53,7 @@ class IdiapModel(nn.Module):
         )
         
     def forward(self, x):
+        x = x.unsqueeze(-1).unsqueeze(-1)
         x = self.decode1(x)
         x = self.decode2(x)
         x = self.decode3(x)

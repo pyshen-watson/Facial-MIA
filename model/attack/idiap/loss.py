@@ -6,6 +6,10 @@ from dataclasses import dataclass, field
 
 
 class DSSIMLoss(nn.Module):
+    '''
+    This loss calculates the DSSIM (Structural Dissimilarity) between two images.
+    Lower DSSIM means the two images are more similar.
+    '''
     
     def __init__(self):
         super(DSSIMLoss, self).__init__()
@@ -16,6 +20,9 @@ class DSSIMLoss(nn.Module):
         return dssim
     
 class IDLoss(nn.Module):
+    '''
+    This loss calculates the MSE (Mean Squared Error) between two feature maps.
+    '''
         
     def __init__(self):
         super(IDLoss, self).__init__()
@@ -27,6 +34,10 @@ class IDLoss(nn.Module):
 
 @dataclass(eq=False)
 class IdiapLoss(nn.Module):
+    '''
+    This class integrates the DSSIM loss, ID loss and MSE loss with their weights to calculate the final loss.
+    The return contains the loss, cosine similarity of two features and the reconstructed image.
+    '''
 
     dssim_weight: float = 0.1
     id_weight: float = 0.1

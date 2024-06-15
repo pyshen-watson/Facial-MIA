@@ -1,1 +1,1 @@
-from .TargetModel import TargetModel, TargetType
+from .target import TargetModel, TargetType

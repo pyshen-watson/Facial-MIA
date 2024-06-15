@@ -12,23 +12,26 @@ from .attack import AttackModel
 
 class ModelInversionAttackModule(pl.LightningModule):
 
-    def __init__(self, target: TargetModel, shadow: AttackModel, lr=1e-3):
+    def __init__(self, target: TargetModel, attack: AttackModel, lr=1e-3):
         super(ModelInversionAttackModule, self).__init__()
-        self.target = target
-        self.shadow = shadow
-        self.criterion = self.shadow.loss_fn
+        self.target = target.freeze().eval()
+        self.attack = attack
         self.lr = lr
+
+        # Set the target model for calculating the loss
+        self.criterion = attack.loss_fn
+        self.criterion.target = target
     
     def setup(self, stage):
         self.exp_name = f"output/{datetime.now():%Y%m%d%H%M%S}"
-        self.ckpt_name = f"{self.target.model_type.value}+{self.shadow.model_type.value}"
+        self.ckpt_name = f"{self.target.model_type.value}+{self.attack.model_type.value}"
         self.gpu_id = self.trainer.local_rank
         
     def forward(self, img):
-        return self.shadow(self.target(img))
+        return self.attack(self.target(img))
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.shadow.parameters(), lr=self.lr)
+        optimizer = torch.optim.Adam(self.attack.parameters(), lr=self.lr)
         return optimizer
     
     def calc_loss(self, img, split:str):
@@ -52,7 +55,7 @@ class ModelInversionAttackModule(pl.LightningModule):
         return self.calc_loss(batch[0], 'test')
 
     def on_save_checkpoint(self, checkpoint):
-        torch.save(self.shadow.backbone.state_dict(), f"{self.ckpt_name}.pt")  
+        torch.save(self.attack.backbone.state_dict(), f"{self.ckpt_name}.pt")  
   
     def visualize_batch(self, img_ori, img_rec, save_dir, dpi=100):
         

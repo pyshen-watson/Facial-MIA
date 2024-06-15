@@ -11,7 +11,7 @@ class AttackType(Enum):
 
     @staticmethod
     def keys():
-        '''This method returns the names of the shadow models for error message.'''
+        '''This method returns the names of the attack models for error message.'''
         return [member.name for member in AttackType]
 
 
@@ -27,7 +27,7 @@ class AttackModel(nn.Module):
     loss_fn: nn.Module = field(init=False)
 
     def __post_init__(self):
-        """Initialize the shadow model with the given model type."""
+        """Initialize the attack model with the given model type."""
 
         super(AttackModel, self).__init__()
 
@@ -53,11 +53,6 @@ class AttackModel(nn.Module):
         except Exception as _:
             msg = f"✗ Failed to load the checkpoint from {ckpt_path}. Please check if the file exists or matches the model {self.model_type}"
             raise ValueError(Fore.RED + msg + Style.RESET_ALL)
-
-    def set_target(self, target: nn.Module):
-        """Set the target model for calculating the loss."""
-        self.loss_fn.target = target
-        return self
 
     def forward(self, x):
         return self.backbone(x)

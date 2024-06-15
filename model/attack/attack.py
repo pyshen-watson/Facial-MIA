@@ -20,8 +20,8 @@ class AttackModel(nn.Module):
 
     model_type: AttackType
     num_features: int = 512
-    dssim_weight: float = 0.1
-    id_weight: float = 0.1
+    dssim_weight: float = 0.2
+    id_weight: float = 0.2
 
     backbone: nn.Module = field(init=False)
     loss_fn: nn.Module = field(init=False)

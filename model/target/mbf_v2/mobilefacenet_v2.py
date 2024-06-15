@@ -15,9 +15,8 @@ class DP_block(nn.Module):
         Init method.
         '''
         super(DP_block, self).__init__()
-        self.device = torch.device(
-            "cuda" if torch.cuda.is_available() else "cpu")
-        # self.device = torch.device("cpu")
+        # self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device("cpu")
         self.layers = nn.Sequential(
             nn.Conv2d(in_c, out_c, kernel, groups=groups,
                       stride=stride, padding=padding, bias=False),

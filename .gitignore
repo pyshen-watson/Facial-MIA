@@ -1,8 +1,8 @@
 *.pyc
 *.h5
 *.pt
+*.onnx
 
 .backup/*
-weights/*
 output/*
 lightning_logs/*

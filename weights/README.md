@@ -1,1 +1,2 @@
-Put the checkpoints here and name them end with `.py`
+- You can put the checkpoints here end with `.pt` or `.onnx`
+- However, the lightning module can only load a weight end with `.pt` currently.

@@ -90,3 +90,16 @@ This module is an abstract of the dataset. Here is the parameters:
 
 ## Deployment
 To export the `.pt` files into `.onnx` format, just modify the pathes to target and attack models, then run `python export_onnx.py`
+
+## Reference
+- Awesome-model-inversion-attack ([GitHub](https://github.com/AndrewZhou924/Awesome-model-inversion-attack))
+- Privacy-preserving Adversarial Facial Features ([pdf](https://arxiv.org/pdf/2305.05391)) ([slide](https://docs.google.com/presentation/d/1WKwZB3LdTicTBb1pVGj-Nhp-8DqqWcu8/edit?usp=drive_link&ouid=117058869000838588957&rtpof=true&sd=true))
+    - Key words: Shadow Model, Server Side Defense 
+- Face Reconstruction from Deep Facial Embeddings using a Convolutional Neural Network([pdf](https://publications.idiap.ch/attachments/papers/2022/OtroshiShahreza_ICIP_2022.pdf)) ([GitLab](https://gitlab.idiap.ch/bob/bob.paper.icip2022_face_reconstruction))
+    - Key words: Inference Time MIA 
+- Exploring Model Inversion Attacks in the Black-box Setting ([pdf](https://petsymposium.org/popets/2023/popets-2023-0012.pdf))
+    - Key words: Few-Shot Learning
+- Model Inversion Attacks Against Collaborative Inference ([pdf](http://palms.ee.princeton.edu/system/files/Model+Inversion+Attack+against+Collaborative+Inference.pdf)) ([slide](https://docs.google.com/presentation/d/1QMS-oZH2GNM_Zlm2vLAYU4OMRH0vYRo6/edit#slide=id.g2ceccffe4f7_0_29)) ([GitHub](https://github.com/zechenghe/Inverse_Collaborative_Inference))
+    - Key words: Inference Time MIA, Query-Free MIA, Split Learning 
+- Querying little is enough: model inversion attack via latent information ([pdf](https://www.researchgate.net/publication/346796594_Querying_Little_Is_Enough_Model_Inversion_Attack_via_Latent_Information)) ([slide](https://docs.google.com/presentation/d/1QMS-oZH2GNM_Zlm2vLAYU4OMRH0vYRo6/edit#slide=id.g2e14a019bcc_0_6))
+    - Key words: Few-Shot Learning, Model Reprogramming, Inference Time MIA 
